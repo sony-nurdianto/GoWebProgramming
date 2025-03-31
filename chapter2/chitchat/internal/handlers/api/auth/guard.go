@@ -21,14 +21,14 @@ type UserCtxKey string
 const ContextKeyUser UserCtxKey = "user"
 
 type GuardHandler struct {
-	handler http.Handler
-	cache   *database.Cache
+	next  http.Handler
+	cache *database.Cache
 }
 
-func NewGuardHandler(cache *database.Cache, handler http.Handler) *GuardHandler {
+func NewGuardHandler(cache *database.Cache, next http.Handler) *GuardHandler {
 	return &GuardHandler{
-		handler: handler,
-		cache:   cache,
+		next:  next,
+		cache: cache,
 	}
 }
 
@@ -36,9 +36,13 @@ func (gh *GuardHandler) AuthGuard(w http.ResponseWriter, r *http.Request) {
 	tokenValue := r.Context().Value(ContextKeyUser)
 	token, ok := tokenValue.(string)
 	if !ok {
-		log.Println("Token Not Set or User not signin")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-		return
+		cookie, err := r.Cookie("session_token")
+		if err != nil {
+			log.Println("Token Not Found in Context or Cookie")
+			gh.next.ServeHTTP(w, r)
+			return
+		}
+		token = cookie.Value
 	}
 
 	pt, err := encryption.VerifyWebToken(token)
@@ -89,5 +93,5 @@ func (gh *GuardHandler) AuthGuard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := context.WithValue(r.Context(), ContextKeyUser, session)
-	gh.handler.ServeHTTP(w, r.WithContext(ctx))
+	gh.next.ServeHTTP(w, r.WithContext(ctx))
 }

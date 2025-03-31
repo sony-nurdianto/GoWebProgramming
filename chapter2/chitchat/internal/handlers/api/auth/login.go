@@ -79,5 +79,5 @@ func (lh *LoginHandlerApi) AuthenticateLogin(w http.ResponseWriter, r *http.Requ
 
 	http.SetCookie(w, &cookie)
 
-	http.Redirect(w, r, "/home", http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
