@@ -23,3 +23,7 @@ func (sr *SessionService) SetSession(key string, value any, expiration time.Dura
 func (sr *SessionService) DeleteSession(keys ...string) error {
 	return sr.sessionRepo.DeleteSesion(keys...)
 }
+
+func (sr *SessionService) GetSession(key string) (string, error) {
+	return sr.sessionRepo.GetSession(key)
+}

@@ -47,7 +47,7 @@ func main() {
 	files := http.FileServer(http.Dir(path))
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", files))
 
-	ui.SetIndexRoutes(router, db)
+	ui.SetIndexRoutes(router, db, cache)
 	ui.SetLogingRoutes(router)
 	ui.SetSignUpRoutes(router)
 	api.SetSignUpAPIRoutes(router, db)
