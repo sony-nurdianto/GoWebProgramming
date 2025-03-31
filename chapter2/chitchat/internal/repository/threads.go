@@ -2,11 +2,9 @@ package repository
 
 import (
 	"context"
-	"log"
-	"time"
+	"database/sql"
 
 	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/database"
-	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/models"
 )
 
 type ThreadRepository struct {
@@ -17,31 +15,22 @@ func NewThreadRepository(data *database.Database) *ThreadRepository {
 	return &ThreadRepository{db: data}
 }
 
-func (r *ThreadRepository) GetThreads() (threads []models.Thread, err error) {
-	// Contoh penggunaan query
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	rows, err := r.db.Query(ctx, "SELECT id, uuid, topic, user_id, created_at FROM threads ORDER BY created_at DESC")
+func (r *ThreadRepository) GetThreads(ctx context.Context) (rows *sql.Rows, err error) {
+	rows, err = r.db.Query(ctx, `
+        SELECT 
+            t.id, t.uuid, t.topic, t.created_at,
+            u.id, u.name, u.email,
+            COUNT(p.id) AS num_replies,
+            p.id, p.uuid, p.body, p.user_id, p.thread_id, p.created_at
+        FROM threads t
+        JOIN users u ON t.user_id = u.id
+        LEFT JOIN posts p ON p.thread_id = t.id
+        GROUP BY t.id, u.id, p.id
+        ORDER BY t.created_at DESC;
+    `)
 	if err != nil {
 		return nil, err
 	}
 
-	defer rows.Close()
-
-	for rows.Next() {
-		conv := models.Thread{}
-		if err = rows.Scan(&conv.Id, &conv.Uuid, &conv.Topic, &conv.UserId, &conv.CreatedAt); err != nil {
-			log.Println("Error scanning row:", err)
-			return nil, err
-		}
-		threads = append(threads, conv)
-	}
-
-	if err = rows.Err(); err != nil {
-		log.Println("Error iterating rows:", err)
-		return nil, err
-	}
-
-	return threads, nil
+	return rows, nil
 }

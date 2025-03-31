@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/database"
 	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/encryption"
@@ -47,7 +48,7 @@ func (gh *GuardHandler) AuthGuard(w http.ResponseWriter, r *http.Request) {
 			log.Println("Secret Is Not Set")
 			http.Error(w, fmt.Sprintf("Internal Server Error: %v", err), http.StatusInternalServerError)
 			return
-		case errors.Is(err, encryption.ErrSecretNotSet):
+		case errors.Is(err, encryption.ErrDecryptFailed):
 			log.Println("Error verify web token")
 			http.Error(w, fmt.Sprintf("Internal Server Error: %v", err), http.StatusUnauthorized)
 			return
@@ -58,6 +59,12 @@ func (gh *GuardHandler) AuthGuard(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	if pt.Expiration.Unix() < time.Now().Unix() {
+		log.Println("Token expired")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
 	sessionRepo := cr.NewSessionRepo(gh.cache)
 	sessionService := cache.NewSessionService(sessionRepo)
 
@@ -65,7 +72,7 @@ func (gh *GuardHandler) AuthGuard(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if errors.Is(err, cr.ErrSessionNotFound) {
 			log.Println("Error Session Data Not Found")
-			http.Error(w, fmt.Sprintf("%v", err), http.StatusNotFound)
+			http.Error(w, fmt.Sprintf("%v", err), http.StatusUnauthorized)
 			return
 		}
 		log.Println("Error Get Data Session")

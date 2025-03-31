@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"context"
 	"time"
 
 	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/repository/cache"
@@ -17,13 +18,21 @@ func NewSessionService(sr *cache.SessionRepo) *SessionService {
 }
 
 func (sr *SessionService) SetSession(key string, value any, expiration time.Duration) error {
-	return sr.sessionRepo.SetSession(key, value, expiration)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	return sr.sessionRepo.SetSession(ctx, key, value, expiration)
 }
 
 func (sr *SessionService) DeleteSession(keys ...string) error {
-	return sr.sessionRepo.DeleteSesion(keys...)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	return sr.sessionRepo.DeleteSesion(ctx, keys...)
 }
 
 func (sr *SessionService) GetSession(key string) (string, error) {
-	return sr.sessionRepo.GetSession(key)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	return sr.sessionRepo.GetSession(ctx, key)
 }

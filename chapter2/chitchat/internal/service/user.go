@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"time"
 
 	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/encryption"
@@ -27,7 +28,10 @@ func (ur *UserService) CreateUser(user models.User) (err error) {
 		return err
 	}
 
-	err = ur.userRepo.NewUser(user)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	err = ur.userRepo.NewUser(ctx, user)
 	if err != nil {
 		return err
 	}
@@ -36,7 +40,10 @@ func (ur *UserService) CreateUser(user models.User) (err error) {
 }
 
 func (ur *UserService) GetUserByEmail(email string) (user models.User, err error) {
-	user, err = ur.userRepo.GetAuthUser(email)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	user, err = ur.userRepo.GetAuthUser(ctx, email)
 	if err != nil {
 		return user, err
 	}

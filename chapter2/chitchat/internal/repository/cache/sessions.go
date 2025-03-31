@@ -22,10 +22,7 @@ func NewSessionRepo(client *database.Cache) *SessionRepo {
 	}
 }
 
-func (sr *SessionRepo) SetSession(key string, value any, expiration time.Duration) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
+func (sr *SessionRepo) SetSession(ctx context.Context, key string, value any, expiration time.Duration) error {
 	if err := sr.conn.Set(ctx, key, value, expiration).Err(); err != nil {
 		return err
 	}
@@ -33,10 +30,7 @@ func (sr *SessionRepo) SetSession(key string, value any, expiration time.Duratio
 	return nil
 }
 
-func (sr *SessionRepo) DeleteSesion(keys ...string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
+func (sr *SessionRepo) DeleteSesion(ctx context.Context, keys ...string) error {
 	if err := sr.conn.Del(ctx, keys...).Err(); err != nil {
 		return err
 	}
@@ -44,10 +38,7 @@ func (sr *SessionRepo) DeleteSesion(keys ...string) error {
 	return nil
 }
 
-func (sr *SessionRepo) GetSession(key string) (string, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
+func (sr *SessionRepo) GetSession(ctx context.Context, key string) (string, error) {
 	stringCmd := sr.conn.Get(ctx, key)
 	switch err := stringCmd.Err(); {
 	case err == redis.Nil:
