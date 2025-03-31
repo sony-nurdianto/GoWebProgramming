@@ -1,0 +1,35 @@
+{{ define "content" }}
+<div class="card mb-3">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span class="lead">
+      <i class="fa-regular fa-comment"></i>
+      {{ .Topic }}
+    </span>
+    <small>Started by {{ .User.Name }} - {{ .CreatedAtDate }}</small>
+  </div>
+  {{ range .Posts }}
+  <div class="card-body border-bottom">
+    <span class="lead">
+      <i class="fa-solid fa-comment"></i>
+      {{ .Body }}
+    </span>
+    <div class="text-end text-muted">
+      {{ .User.Name }} - {{ .CreatedAtDate }}
+    </div>
+  </div>
+  {{ end }}
+</div>
+<div class="card border-info">
+  <div class="card-body">
+    <form role="form" action="/thread/post" method="post">
+      <div class="mb-3">
+        <textarea class="form-control" name="body" id="body" placeholder="Write your reply here" rows="3"></textarea>
+        <input type="hidden" name="uuid" value="{{ .Uuid }}">
+      </div>
+      <div class="text-end">
+        <button class="btn btn-primary" type="submit">Reply</button>
+      </div>
+    </form>
+  </div>
+</div>
+{{ end }}

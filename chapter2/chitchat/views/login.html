@@ -1,0 +1,22 @@
+{{ define "content" }}
+<div class="row justify-content-center">
+  <div class="col-md-4">
+    <form class="p-4 border rounded shadow-sm" role="form" action="/login/authenticate" method="post">
+      <h2 class="text-center mb-4">
+        <i class="fa-regular fa-comments"></i>
+        ChitChat
+      </h2>
+      <div class="mb-3">
+        <input type="email" name="email" class="form-control" placeholder="Email address" required autofocus>
+      </div>
+      <div class="mb-3">
+        <input type="password" name="password" class="form-control" placeholder="Password" required>
+      </div>
+      <button class="btn btn-primary w-100" type="submit">Sign in</button>
+      <div class="text-end mt-3">
+        <a class="small" href="/signup">Sign up</a>
+      </div>
+    </form>
+  </div>
+</div>
+{{ end }}
