@@ -1,11 +1,9 @@
 package main
 
-import (
-	"fmt"
-
-	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/genrators"
-)
+import "fmt"
 
 func main() {
-	fmt.Println(genrators.CreateUUID())
+	for range 10 {
+		fmt.Println("Something")
+	}
 }

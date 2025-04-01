@@ -1,0 +1,24 @@
+{{ define "content" }}
+<div class="col">
+  {{ range . }}
+  <div class="col-12 mb-3">
+    <div class="card shadow-sm">
+      <div class="card-header d-flex align-items-center">
+        <i class="fa fa-comment-o me-2"></i>
+        <span class="lead">{{ .Topic }}</span>
+      </div>
+      <div class="card-body">
+        <p class="mb-1">
+          Started by
+          <strong>{{ .User.Name }}</strong>
+          - {{ .CreatedAtDate }} - {{ .NumReplies }} posts.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="container text-end mt-3">
+    <a href="/thread/read?id={{.Uuid }}" class="btn btn-outline-primary">Read more</a>
+  </div>
+  {{ end }}
+</div>
+{{ end }}

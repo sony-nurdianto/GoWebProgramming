@@ -1,9 +1,12 @@
 package ui
 
 import (
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/database"
 	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/handlers/ui"
+	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/middleware"
 )
 
 func SetIndexRoutes(r *mux.Router, data *database.Database, cache *database.Cache) {
@@ -13,7 +16,7 @@ func SetIndexRoutes(r *mux.Router, data *database.Database, cache *database.Cach
 
 	indexRoutes.HandleFunc("/", newIndexHandler.Index)
 
-	// need Impl for users dashboard
-	// newAuthMw := middleware.NewMiddleWareAuth(cache)
-	// indexRoutes.Handle("/home", middleware.WraperMiddleware(http.HandlerFunc(newIndexHandler.Index), newAuthMw.AuthMiddleware))
+	// protected routes
+	newAuthMw := middleware.NewMiddleWareAuth(cache)
+	indexRoutes.Handle("/home", middleware.WraperMiddleware(http.HandlerFunc(newIndexHandler.Home), newAuthMw.AuthMiddleware))
 }

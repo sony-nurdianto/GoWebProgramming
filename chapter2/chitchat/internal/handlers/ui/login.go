@@ -14,9 +14,9 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			Name:   "layout",
 			Data:   nil,
 			Path: []string{
-				"views/layout.html",
-				"views/public.navbar.html",
-				"views/login.html",
+				"views/public/layout.html",
+				"views/public/navbar.html",
+				"views/public/component/loginForm.html",
 			},
 		})
 
