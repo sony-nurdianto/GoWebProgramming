@@ -2,7 +2,6 @@ package auth
 
 import (
 	"database/sql"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -20,8 +19,6 @@ import (
 var (
 	ErrUnAuthorizedUser error = errors.New("unauthorized access deniend wrong password")
 	ErrUserNotFound     error = errors.New("user not found")
-	ErrMarshallSession  error = errors.New("failed to marshal session data")
-	ErrSetSession       error = errors.New("failed to set session data")
 	ErrEncryptToken     error = errors.New("failed to encrypt token")
 )
 
@@ -74,16 +71,11 @@ func (ls *LoginUpService) AuthenticateLogin(email string, password string) (stri
 		CreatedAt: user.CreatedAt,
 	}
 
-	sessionJson, err := json.Marshal(session)
-	if err != nil {
-		return "", fmt.Errorf("%w:%v", ErrMarshallSession, err)
-	}
-
 	sessionRepo := cr.NewSessionRepo(ls.cache)
 	sessionService := cache.NewSessionService(sessionRepo)
 
-	if err := sessionService.SetSession(tokenID, sessionJson, 1*time.Hour); err != nil {
-		return "", fmt.Errorf("%w:%v", ErrSetSession, err)
+	if err := sessionService.SetSession(tokenID, session, 1*time.Hour); err != nil {
+		return "", err
 	}
 
 	return token, nil

@@ -12,7 +12,9 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/database"
-	api "github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/routes/api/auth"
+	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/middleware"
+	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/routes/api"
+	authApi "github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/routes/api/auth"
 	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/routes/ui"
 )
 
@@ -38,6 +40,15 @@ func main() {
 
 	router := mux.NewRouter()
 
+	ui.SetIndexRoutes(router, db, cache)
+	ui.SetLogingRoutes(router)
+	ui.SetSignUpRoutes(router)
+	ui.SetThreadRoutesUi(router, cache)
+	authApi.SetSignUpAPIRoutes(router, db)
+	authApi.SetLoginAPIRoutes(router, db, cache)
+	authApi.SetLogoutApiRoutes(router, cache)
+	api.SetThreadRoutesAPI(router, db, cache)
+
 	path, err := filepath.Abs("public")
 	log.Println(path)
 	if err != nil {
@@ -45,15 +56,7 @@ func main() {
 	}
 
 	files := http.FileServer(http.Dir(path))
-	router.PathPrefix("/*/static/").Handler(http.StripPrefix("/*/static/", files))
-
-	ui.SetIndexRoutes(router, db, cache)
-	ui.SetLogingRoutes(router)
-	ui.SetSignUpRoutes(router)
-	ui.SetThreadRoutesUi(router, cache)
-	api.SetSignUpAPIRoutes(router, db)
-	api.SetLoginAPIRoutes(router, db, cache)
-	api.SetLogoutApiRoutes(router, cache)
+	router.PathPrefix("/").Handler(middleware.DynamicPrefix(files))
 
 	server := &http.Server{
 		Addr:    "0.0.0.0:8080",

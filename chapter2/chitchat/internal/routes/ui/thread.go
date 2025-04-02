@@ -13,5 +13,5 @@ func SetThreadRoutesUi(r *mux.Router, c *database.Cache) {
 	threadRouter := r.PathPrefix("/thread").Subrouter()
 
 	newAuthMw := middleware.NewMiddleWareAuth(c)
-	threadRouter.Handle("/new", middleware.WraperMiddleware(http.HandlerFunc(ui.ThreadFormHandlerUi), newAuthMw.AuthMiddleware))
+	threadRouter.Handle("/new", middleware.WraperMiddleware(http.HandlerFunc(ui.ThreadFormHandlerUi), newAuthMw.AuthMiddleware)).Methods(http.MethodGet)
 }

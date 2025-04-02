@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/handlers/ui"
 )
@@ -8,5 +10,5 @@ import (
 func SetSignUpRoutes(r *mux.Router) {
 	signupRoutes := r.PathPrefix("/signup").Subrouter()
 
-	signupRoutes.HandleFunc("", ui.Signup)
+	signupRoutes.HandleFunc("", ui.Signup).Methods(http.MethodGet)
 }

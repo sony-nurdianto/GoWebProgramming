@@ -14,9 +14,9 @@ func SetIndexRoutes(r *mux.Router, data *database.Database, cache *database.Cach
 
 	newIndexHandler := ui.NewIndexHandlerUI(data)
 
-	indexRoutes.HandleFunc("/", newIndexHandler.Index)
+	indexRoutes.HandleFunc("/", newIndexHandler.Index).Methods(http.MethodGet)
 
 	// protected routes
 	newAuthMw := middleware.NewMiddleWareAuth(cache)
-	indexRoutes.Handle("/home", middleware.WraperMiddleware(http.HandlerFunc(newIndexHandler.Home), newAuthMw.AuthMiddleware))
+	indexRoutes.Handle("/home", middleware.WraperMiddleware(http.HandlerFunc(newIndexHandler.Home), newAuthMw.AuthMiddleware)).Methods(http.MethodGet)
 }

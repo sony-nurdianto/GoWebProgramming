@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -11,7 +10,6 @@ import (
 
 	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/database"
 	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/encryption"
-	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/models"
 	cr "github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/repository/cache"
 	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/service/cache"
 )
@@ -79,19 +77,18 @@ func (gh *GuardHandler) AuthGuard(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, fmt.Sprintf("%v", err), http.StatusUnauthorized)
 			return
 		}
+
+		if errors.Is(err, cache.ErrUnMarshallSession) {
+			log.Println("Error UnMarshall Session")
+			http.Error(w, fmt.Sprintf("%v", err), http.StatusInternalServerError)
+			return
+		}
+
 		log.Println("Error Get Data Session")
 		http.Error(w, fmt.Sprintf("%v", err), http.StatusInternalServerError)
 		return
 	}
 
-	var session models.Session
-	err = json.Unmarshal([]byte(sessionData), &session)
-	if err != nil {
-		log.Println("Error Get Data Session")
-		http.Error(w, fmt.Sprintf("%v", err), http.StatusInternalServerError)
-		return
-	}
-
-	ctx := context.WithValue(r.Context(), ContextKeyUser, session)
+	ctx := context.WithValue(r.Context(), ContextKeyUser, sessionData)
 	gh.next.ServeHTTP(w, r.WithContext(ctx))
 }

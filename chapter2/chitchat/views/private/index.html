@@ -14,10 +14,10 @@
           - {{ .CreatedAtDate }} - {{ .NumReplies }} posts.
         </p>
       </div>
+      <div class="card-footer d-flex justify-content-end">
+        <a href="/thread/read?id={{.Uuid }}">Read more</a>
+      </div>
     </div>
-  </div>
-  <div class="container text-end mt-3">
-    <a href="/thread/read?id={{.Uuid }}" class="btn btn-outline-primary">Read more</a>
   </div>
   {{ end }}
 </div>
