@@ -12,6 +12,7 @@ import (
 )
 
 type DBInterface interface {
+	BeginTx(ctx context.Context, opts *sql.TxOptions) (*sql.Tx, error)
 	Query(ctx context.Context, query string, args ...any) (*sql.Rows, error)
 	QueryRow(ctx context.Context, query string, args ...any) *sql.Row
 	Exec(ctx context.Context, query string, args ...any) (sql.Result, error)
@@ -47,6 +48,15 @@ func NewDatabase(connStr string) (*Database, error) {
 
 	log.Println("Database connected with pooling")
 	return &Database{conn: conn}, nil
+}
+
+func (d *Database) BeginTx(ctx context.Context, opts *sql.TxOptions) (*sql.Tx, error) {
+	tx, err := d.conn.BeginTx(ctx, opts)
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute Transaction: %w", err)
+	}
+
+	return tx, nil
 }
 
 func (d *Database) Query(ctx context.Context, query string, args ...any) (*sql.Rows, error) {

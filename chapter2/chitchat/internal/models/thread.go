@@ -20,3 +20,8 @@ type PostThread struct {
 	UserId    int
 	CreatedAt time.Time
 }
+
+type ThreadDetails struct {
+	Thread
+	Posts []Post
+}

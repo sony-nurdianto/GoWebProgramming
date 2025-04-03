@@ -7,7 +7,9 @@ type Post struct {
 	Uuid          string
 	Body          string
 	UserId        int
+	UserName      string
 	ThreadId      int
+	ThreadUuid    string
 	CreatedAt     time.Time
 	CreatedAtDate string
 }

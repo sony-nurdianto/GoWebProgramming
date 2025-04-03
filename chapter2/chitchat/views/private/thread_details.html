@@ -1,0 +1,33 @@
+{{ define "content" }}
+<div class="col">
+  <div class="card shadow-sm mb-3">
+    <div class="card-header d-flex align-items-center">
+      <i class="fa fa-comment me-2"></i>
+      <span class="lead">{{ .Threads.Topic }}</span>
+    </div>
+    <div class="card-body">
+      <p class="mb-1">
+        Started by
+        <strong>{{ .Threads.User.Name }}</strong>
+        - {{ .Threads.CreatedAtDate }}
+      </p>
+    </div>
+  </div>
+  <div class="mt-4">
+    <h5>Comments ({{ len .Threads.Posts }})</h5>
+    {{ range .Threads.Posts }}
+    <div class="card shadow-sm mb-2">
+      <div class="card-body">
+        <p class="mb-1">
+          <strong>{{ .UserName }}</strong>
+          - {{ .CreatedAtDate }}
+        </p>
+        <p>{{ .Body }}</p>
+      </div>
+    </div>
+    {{ else }}
+    <p>No comments yet. Be the first to comment!</p>
+    {{ end }}
+  </div>
+</div>
+{{ end }}

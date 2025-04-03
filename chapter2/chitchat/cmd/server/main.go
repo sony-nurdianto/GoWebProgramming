@@ -43,7 +43,7 @@ func main() {
 	ui.SetIndexRoutes(router, db, cache)
 	ui.SetLogingRoutes(router)
 	ui.SetSignUpRoutes(router)
-	ui.SetThreadRoutesUi(router, cache)
+	ui.SetThreadRoutesUi(router, db, cache)
 	authApi.SetSignUpAPIRoutes(router, db)
 	authApi.SetLoginAPIRoutes(router, db, cache)
 	authApi.SetLogoutApiRoutes(router, cache)
