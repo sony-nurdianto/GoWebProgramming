@@ -1,7 +1,42 @@
 {{define "addButton"}}
+{{if .IsThread}}
 <div class="dropup position-absolute bottom-0 end-0 rounded-circle m-5">
-  <a href="{{.BtnAddUrl}}" class="btn btn-success btn-lg rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+  <a href="{{.BtnAddUrl}}"
+    class="btn btn-success btn-lg rounded-circle d-flex align-items-center justify-content-center"
+    style="width: 60px; height: 60px;">
     <i class="fa-solid fa-plus"></i>
   </a>
 </div>
+{{else}}
+<div>
+  <div class="dropup position-absolute bottom-0 end-0 rounded-circle m-5">
+    <button class="btn btn-success btn-lg rounded-circle d-flex align-items-center justify-content-center"
+      style="width: 60px; height: 60px;" data-bs-toggle="modal" data-bs-target="#postFormModal">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+  </div>
+  <div class="modal fade" id="postFormModal" tabindex="-1" aria-labelledby="postFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="postFormModalLabel">Post A Comment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{{.BtnAddUrl}}" method="POST">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="body" class="form-label">Comment</label>
+              <input type="text" class="form-control" id="body" name="body" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}
 {{end}}

@@ -19,11 +19,6 @@ func NewIndexHandlerUI(data *database.Database) *IndexHandlerUI {
 	return &IndexHandlerUI{db: data}
 }
 
-type IndexUiData struct {
-	Threads   []models.Thread
-	BtnAddUrl string
-}
-
 func (d *IndexHandlerUI) Home(w http.ResponseWriter, r *http.Request) {
 	threadRepo := repository.NewThreadRepository(d.db)
 	threadService := service.NewThreadService(threadRepo)
@@ -35,9 +30,12 @@ func (d *IndexHandlerUI) Home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	indexUiData := IndexUiData{
+	log.Printf("xxxxxxxxxxxxxxxxxxxxxxx Threads Len %d xxxxxxxxxxxxxxxxxxxxxxx\n", len(threads))
+
+	indexUiData := models.ContentData{
 		Threads:   threads,
 		BtnAddUrl: "thread/new",
+		IsThread:  true,
 	}
 
 	parser := templates.NewParseTemplate(

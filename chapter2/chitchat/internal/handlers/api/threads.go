@@ -29,7 +29,7 @@ func NewThreadHandlerApi(data *database.Database, cache *database.Cache) *Thread
 func (th *ThreadHandlerApi) CreateThread(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		log.Println("Failed to ParseForm: ", err)
-		http.Error(w, fmt.Sprintf("Unauthorized Token is missing: %s", err), http.StatusUnauthorized)
+		http.Error(w, fmt.Sprintf("Internal Server Error: %s", err), http.StatusInternalServerError)
 		return
 	}
 

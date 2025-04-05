@@ -22,15 +22,16 @@ func NewThreadRepository(data *database.Database) *ThreadRepository {
 
 func (r *ThreadRepository) GetThreads(ctx context.Context) (rows *sql.Rows, err error) {
 	rows, err = r.db.Query(ctx, `
-        SELECT 
-            t.id, t.uuid, t.topic, t.created_at,
-            u.id, u.name, u.email,
-            COUNT(p.id) AS num_replies
-        FROM threads t
-        JOIN users u ON t.user_id = u.id
-        LEFT JOIN posts p ON p.thread_id = t.id
-        GROUP BY t.id, u.id, p.id
-        ORDER BY t.created_at DESC
+    SELECT 
+        t.id, t.uuid, t.topic, t.created_at,
+        u.id, u.name, u.email,
+        COUNT(p.id) AS num_replies
+    FROM threads t
+    JOIN users u ON t.user_id = u.id
+    LEFT JOIN posts p ON p.thread_id = t.id
+    GROUP BY t.id, u.id, u.name, u.email
+    ORDER BY t.created_at DESC;
+
     `)
 	if err != nil {
 		return nil, err

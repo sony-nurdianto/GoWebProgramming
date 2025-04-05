@@ -12,11 +12,6 @@ import (
 	"github.com/sony-nurdianto/GoWebProgramming/chapter2/chitchat/internal/templates"
 )
 
-type ThreadDetailsUiData struct {
-	Threads   models.Thread
-	BtnAddUrl string
-}
-
 type ThreadsHandlerUi struct {
 	db *database.Database
 }
@@ -28,7 +23,8 @@ func NewThreadsHandlerUi(data *database.Database) *ThreadsHandlerUi {
 }
 
 func (th *ThreadsHandlerUi) ThreadsDetailsHandlerUI(w http.ResponseWriter, r *http.Request) {
-	threadUUID := r.URL.Query().Get("id")
+	threadUUID := r.URL.Query().Get("threadUUID")
+	threadId := r.URL.Query().Get("threadId")
 
 	newThreadRepo := repository.NewThreadRepository(th.db)
 	newThreadService := service.NewThreadService(newThreadRepo)
@@ -40,9 +36,10 @@ func (th *ThreadsHandlerUi) ThreadsDetailsHandlerUI(w http.ResponseWriter, r *ht
 		return
 	}
 
-	threadDetailsUiData := ThreadDetailsUiData{
-		Threads:   thread,
-		BtnAddUrl: "/thread/comment?id=" + threadUUID,
+	threadDetailsUiData := models.ContentData{
+		Thread:    thread,
+		BtnAddUrl: fmt.Sprintf("/post/new?threadUUID=%s&threadId=%s", threadUUID, threadId),
+		IsThread:  false,
 	}
 
 	parser := templates.NewParseTemplate(

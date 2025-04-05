@@ -44,10 +44,13 @@ func main() {
 	ui.SetLogingRoutes(router)
 	ui.SetSignUpRoutes(router)
 	ui.SetThreadRoutesUi(router, db, cache)
+
 	authApi.SetSignUpAPIRoutes(router, db)
 	authApi.SetLoginAPIRoutes(router, db, cache)
 	authApi.SetLogoutApiRoutes(router, cache)
+
 	api.SetThreadRoutesAPI(router, db, cache)
+	api.SetPostRoutesAPI(router, db, cache)
 
 	path, err := filepath.Abs("public")
 	log.Println(path)
